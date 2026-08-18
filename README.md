@@ -1,4 +1,4 @@
-# shiori_extention
+# shiori_extension
 
 この拡張機能は、旅行中にウェブサイトを閲覧しながら地点を登録し、最終的に「旅のしおり」を作成できるChrome拡張機能です。
 
