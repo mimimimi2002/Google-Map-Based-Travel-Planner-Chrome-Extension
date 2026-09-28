@@ -4,6 +4,12 @@ A Chrome extension that allows users to save places while browsing travel-relate
 
 The extension displays an interactive Google Maps interface on top of the currently viewed webpage. The map application (`index.html`) is hosted as a static website on AWS.
 
+## Demo
+
+See the project demo in the Google Slides presentation:
+
+https://docs.google.com/presentation/d/1uVr59mahwf3xTrPJPh-eGZ-YFghic4-fhgrPOhSTplM/edit?slide=id.g3c4642b03e5_0_45#slide=id.g3c4642b03e5_0_45
+
 ## Features
 
 * Save place names directly from any webpage by selecting text
@@ -297,7 +303,3 @@ Clone this repository and open the Chrome Extensions page.
 3. Enable **Developer mode**
 4. Click **Load unpacked**
 5. Select the `maps` directory
-
-## Demo
-
-A demo of the project is available in the Google Slides presentation.
