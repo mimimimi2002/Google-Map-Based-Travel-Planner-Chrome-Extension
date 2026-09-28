@@ -1,3 +1,18 @@
+# Google Maps-Based Travel Planner Chrome Extension
+
+A Chrome extension that allows users to save places while browsing travel-related websites and organize them into a travel itinerary.
+
+The extension displays an interactive Google Maps interface on top of the currently viewed webpage. The map application (`index.html`) is hosted as a static website on AWS.
+
+## Features
+
+* Save place names directly from any webpage by selecting text
+* Manually search for and add places
+* Display saved places on Google Maps without leaving the current webpage
+* Persist saved places using Chrome local storage
+* Generate a travel itinerary ("Shiori") from the saved places
+* Move, resize, and minimize the embedded map interface
+
 ## How It Works
 
 The project consists of three main components:
@@ -175,3 +190,114 @@ Amazon S3
    |
    └----> shiori/index.html
 ```
+
+## Travel Itinerary ("Shiori")
+
+The saved locations can be converted into a travel itinerary.
+
+When the user clicks the **Create Shiori** button, the extension retrieves the saved `placeNames` from `chrome.storage.local`, serializes them as JSON, and passes them to the itinerary page through a URL query parameter.
+
+```text
+chrome.storage.local
+        |
+        | placeNames
+        v
+["Tokyo Tower", "Shibuya", "Asakusa"]
+        |
+        | JSON + URL encoding
+        v
+/shiori/?placeNames=...
+        |
+        v
+Travel Itinerary
+```
+
+This connects the browsing workflow with the final travel-planning page:
+
+```text
+Browse travel websites
+        |
+        v
+Select interesting places
+        |
+        v
+Chrome Extension
+        |
+        +---- Save ----> chrome.storage.local
+        |
+        +---- Display -> Google Maps
+        |
+        v
+Collect multiple places
+        |
+        v
+Create Shiori
+        |
+        v
+Travel Itinerary
+```
+
+## AWS Architecture
+
+The Google Maps web application (`index.html`) and itinerary pages are hosted as a static website on AWS.
+
+The following AWS services are used:
+
+* **Amazon S3** — Stores and serves the static website files.
+* **Amazon CloudFront** — Distributes the website through a CDN and provides HTTPS access.
+* **AWS Certificate Manager (ACM)** — Issues and manages the TLS certificate for the custom domain.
+* **Amazon Route 53** — Manages DNS records and routes the custom domain to CloudFront.
+
+```text
+Chrome Extension
+       |
+       | iframe
+       | https://mikimiki.site
+       v
+     Browser
+       |
+       | DNS lookup
+       v
+   Route 53
+       |
+       | Alias record
+       v
+   CloudFront
+       |
+       | HTTPS
+       | TLS certificate: ACM
+       v
+   Amazon S3
+       |
+       v
+   index.html
+       |
+       v
+ Google Maps UI
+```
+
+### DNS and HTTPS
+
+A Route 53 Hosted Zone manages the DNS records for the custom domain.
+
+The domain registrar delegates DNS management to the authoritative name servers assigned by Route 53.
+
+The custom domain is mapped to the CloudFront distribution using a Route 53 Alias record.
+
+For HTTPS, AWS Certificate Manager issues a TLS certificate for the custom domain. Domain ownership is verified using DNS validation, and the issued certificate is attached to the CloudFront distribution.
+
+CloudFront presents this certificate during the TLS handshake and serves the static content stored in S3.
+
+## Setup
+
+Clone this repository and open the Chrome Extensions page.
+
+1. Open **Extensions**
+2. Select **Manage Extensions**
+3. Enable **Developer mode**
+4. Click **Load unpacked**
+5. Select the `maps` directory
+
+## Demo
+
+A demo of the project is available in the Google Slides presentation.
